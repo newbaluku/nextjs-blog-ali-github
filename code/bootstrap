@@ -1,0 +1,3 @@
+#!/usr/bin/env bash
+export PATH=/code/node-v12.22.9-linux-x64/bin:$PATH
+npx next start --port 9000

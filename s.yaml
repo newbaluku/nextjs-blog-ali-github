@@ -1,0 +1,53 @@
+edition: 1.0.0
+name: web-framework-app
+access: "default"
+
+vars:
+  region: "ap-southeast-1"
+  # region: "cn-hangzhou"
+  service:
+    name: "nextjs-blog-service"
+    description: 'nextjs-blog service'
+
+services:
+  framework:
+    component: fc
+    actions:
+      # pre-deploy:
+        # - run: npm install --production
+        #   path: ./code
+        - run: npm run build
+          path: ./code
+    props:
+      region: ${vars.region}
+      service: ${vars.service}
+      function:
+        name: nextjs-blog-app
+        description: nextjs-blog App
+        codeUri: './code'
+        runtime: custom
+        timeout: 60
+        memorySize: 1024
+        instanceConcurrency: 5
+        # caPort: 9000
+        # customRuntimeConfig:
+        #   command:
+        #     - npx
+        #     - next
+        #     - start
+        #     - --port
+        #     - '9000'
+        environmentVariables:
+          NODE_ENV: development
+      triggers:
+        - name: httpTrigger
+          type: http
+          config:
+            authType: anonymous
+            methods:
+              - GET
+      customDomains:
+        - domainName: auto
+          protocol: HTTP
+          routeConfigs:
+            - path: '/*'
